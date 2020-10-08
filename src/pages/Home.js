@@ -1,22 +1,31 @@
 import React from 'react'
-import {TextInput, Text, TouchbleOpacity, ScrollView, View, StyleSheet} from 'react-native'
+import {TextInput, Text, TouchableOpacity, ScrollView, View, StyleSheet} from 'react-native'
 
-export default function RegisterUser(){
+export default function Home(){
     return(
         <ScrollView style={stylesHome.scrollContainer}>
             <View style={stylesHome.container}>
-                <Text style={stylesHome.title}>Bem-vindo</Text>
-                <Text style={stylesHome.text}>Dê início aos seus eestudos agora mesmo</Text>
-
-                <Text style={stylesHome.lableName}>Nome</Text>
-                <TextInput />
-
-                <Text style={stylesHome.lableEmail}>Email</Text>
-                <TextInput />
-
-                <Text style={stylesHome.lablePassword}>Senha</Text>
-                <TextInput />
+                <Text>Total de Horas Estudadas</Text>
+                <Text>15:46:56</Text>
+            </View>
+            <View style={stylesHome.subjectsView}>
+                <View style={stylesHome.subjectsTitleView}>
+                    <Text style={stylesHome.subjectsTitleView}>Matérias</Text>
+                    <View style={stylesHome.subjectsTitlePlus}>
+                        <Text style={stylesHome.subjectsTitlePlusTxt}>+</Text>
+                    </View>
+                </View>
+                <View>
+                    <TouchableOpacity style={stylesHome.subject1}>
+                        <Text>Português</Text>
+                        <Text>Número de Tópicos: 5</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </ScrollView>
     )
 }
+
+const stylesHome = StyleSheet.create({
+    
+})

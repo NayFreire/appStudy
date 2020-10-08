@@ -1,7 +1,7 @@
 import React from 'react'
 import {TextInput, Text, TouchbleOpacity, ScrollView, View} from 'react-native'
 
-export default function RegisterUser(){
+export default function RegisterSubject(){
     return(
         <ScrollView>
             <View>

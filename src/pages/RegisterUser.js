@@ -25,7 +25,7 @@ export default function RegisterUser({navigation}){
                     style={stylesHome.createAccount}
                     onPress={() => navigation.navigate('Home')}>
                         <Text style={stylesHome.txtCreateAccount}>Criar minha conta</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> 
 
                     <TouchableOpacity
                     style={stylesHome.login}
