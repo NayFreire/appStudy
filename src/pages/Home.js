@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView} from 'react-native'
-
+import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView, Image} from 'react-native'
+import ImagemEmptyList from '../components/ImageEmptyList'
 import * as SQLite from 'expo-sqlite'
 
 var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
@@ -17,7 +17,7 @@ export default function Home({navigation}){
                             'DROP TABLE IF EXISTS tableSubjects', []
                         );
                         txn.executeSql(
-                            'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50))', []
+                            'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TIME)', []
                         )
                     }
                 }
@@ -36,39 +36,17 @@ export default function Home({navigation}){
                     <View style={stylesHome.subjectsView}>
                         <View style={stylesHome.subjectsTitleView}>
                             <Text style={stylesHome.subjectsTitleText}>Matérias</Text>
-                            <View style={stylesHome.subjectsTitlePlus}>
+                            <TouchableOpacity 
+                            style={stylesHome.subjectsTitlePlus}
+                            onPress={() => {
+                                prompt('Informe o nome da matéria')
+                            }}>
                                 <Text style={stylesHome.subjectsTitlePlusTxt}>+</Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
-                        <View>
-                            <TouchableOpacity style={stylesHome.subjectItem}>
-                                <Text style={stylesHome.subjectName}>Português</Text>
-                                <Text style={stylesHome.numberTopics}>Número de Tópicos: 5</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={stylesHome.subjectItem}>
-                                <Text style={stylesHome.subjectName}>Português</Text>
-                                <Text style={stylesHome.numberTopics}>Número de Tópicos: 5</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={stylesHome.subjectItem}>
-                                <Text style={stylesHome.subjectName}>Português</Text>
-                                <Text style={stylesHome.numberTopics}>Número de Tópicos: 5</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={stylesHome.subjectItem}>
-                                <Text style={stylesHome.subjectName}>Português</Text>
-                                <Text style={stylesHome.numberTopics}>Número de Tópicos: 5</Text>
-                            </TouchableOpacity>
-                            
-                            <TouchableOpacity style={stylesHome.subjectItem}>
-                                <Text style={stylesHome.subjectName}>Português</Text>
-                                <Text style={stylesHome.numberTopics}>Número de Tópicos: 5</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={stylesHome.subjectItem}>
-                                <Text style={stylesHome.subjectName}>Português</Text>
-                                <Text style={stylesHome.numberTopics}>Número de Tópicos: 5</Text>
-                            </TouchableOpacity>
+                        <View style={stylesHome.subjectsList}>
+                            <ImagemEmptyList style={stylesHome.imgEmpty}/>
+                            <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text>
                         </View>
                     </View>
                 </View>
@@ -118,8 +96,7 @@ const stylesHome = StyleSheet.create({
         borderRadius: 20
     },
     subjectsTitleView:{
-        padding: 10,
-        //backgroundColor: '#e1e1e1',
+        padding: 20,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
@@ -141,6 +118,20 @@ const stylesHome = StyleSheet.create({
         padding: 0,
         color: '#fff',
         fontSize: 40
+    },
+    subjectsList:{
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    imgEmpty:{
+        marginBottom: 20
+    },
+    txtEmpty:{
+        fontSize: 20,
+        textAlign: 'center',
+        color: '#67656F',
+        marginBottom: 10
     },
     subjectItem:{
         margin: 10,
