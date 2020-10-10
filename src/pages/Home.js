@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView, Image} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView} from 'react-native'
 import ImagemEmptyList from '../components/ImageEmptyList'
 import * as SQLite from 'expo-sqlite'
 
@@ -38,9 +38,7 @@ export default function Home({navigation}){
                             <Text style={stylesHome.subjectsTitleText}>Matérias</Text>
                             <TouchableOpacity 
                             style={stylesHome.subjectsTitlePlus}
-                            onPress={() => {
-                                prompt('Informe o nome da matéria')
-                            }}>
+                            onPress={() => navigation.navigate('RegisterSubject')}>
                                 <Text style={stylesHome.subjectsTitlePlusTxt}>+</Text>
                             </TouchableOpacity>
                         </View>
