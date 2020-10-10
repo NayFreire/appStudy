@@ -1,7 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView} from 'react-native'
 
-export default function Home(){
+import * as SQLite from 'expo-sqlite'
+
+var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
+
+export default function Home({navigation}){
+    useEffect(() => {
+        db.transaction((txn) => {
+            txn.executeSql(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='tableSubjects",
+                [],
+                function (tx, result) {
+                    if(result.rows.length == 0){
+                        txn.executeSql(
+                            'DROP TABLE IF EXISTS tableSubjects', []
+                        );
+                        txn.executeSql(
+                            'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50))', []
+                        )
+                    }
+                }
+            )
+        })
+    }, [])
+
     return(
         <SafeAreaView style={stylesHome.safeArea}>
             <ScrollView style={stylesHome.scrollContainer}>                
@@ -68,7 +91,7 @@ const stylesHome = StyleSheet.create({
     },
     container:{
         maxWidth: 700,
-        backgroundColor: '#00ddee',
+        //backgroundColor: '#00ddee',
         justifyContent: 'center',
         alignItems: 'center'
     },
