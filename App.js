@@ -7,7 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 
 import Home from './src/pages/Home'
 import Login from './src/pages/Login'
-import RegisterUser from './src/pages/RegisterUser'
+import RegisterLoginUser from './src/pages/RegisterLoginUser'
 // import RegisterSubject from './src/pages/crud/subjects/RegisterSubject'
 // import UpdateSubject from './src/pages/crud/subjects/UpdateSubject'
 // import DeleteSubject from './src/pages/crud/subjects/DeleteSubject'
@@ -20,7 +20,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="RegisterUser" component={RegisterUser} options={{title: "Cadastre-se"}}/> 
+        <Stack.Screen name="RegisterUser" component={RegisterLoginUser} options={{title: "Cadastre-se ou entre"}}/> 
         <Stack.Screen name="Login" component={Login} options={{title: "Login"}}/> 
         <Stack.Screen name="Home" component={Home} options={{title: "Página Inicial"}}/> 
       </Stack.Navigator>

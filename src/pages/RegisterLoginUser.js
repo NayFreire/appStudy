@@ -1,7 +1,29 @@
-import React from 'react'
-import {TextInput, Text, TouchableOpacity, View, StyleSheet} from 'react-native'
+import React, { useState } from 'react'
+import {TextInput, Text, TouchableOpacity, View, StyleSheet, Alert} from 'react-native'
+//import firebase from '@firebase/app'
+import '@firebase/auth'
+import firebaseConfig from './crud/Firebase'
 
 export default function RegisterUser({navigation}){
+
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    loginSucesso = () => {
+        navigation.navigate('Home');
+    }
+    
+    createAccount = () => {
+        firebase.auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(loginSucesso)
+        .catch(error => {
+            this.setState({
+                message: this.erroLoginMessage(error.code)
+            })
+        })
+    }
+
     return(
         <View style={stylesHome.container}>
             <View style={stylesHome.formView}>
@@ -9,15 +31,16 @@ export default function RegisterUser({navigation}){
                 <Text style={stylesHome.text}>Dê início aos seus estudos agora mesmo</Text>
 
                 <View style={stylesHome.form}>
-                    <Text style={stylesHome.lable}>Nome</Text>
-                    <TextInput style={stylesHome.input}/>
-
                     <Text style={stylesHome.lable}>Email</Text>
-                    <TextInput style={stylesHome.input}/>
+                    <TextInput 
+                    style={stylesHome.input}
+                    onChangeText={(email) => setEmail(email)}/>
 
                     <Text style={stylesHome.lable}>Senha</Text>
-                    <TextInput style={stylesHome.input}
-                    secureTextEntry/>
+                    <TextInput 
+                    style={stylesHome.input}
+                    secureTextEntry
+                    onChangeText={(password) => setPassword(password)}/>
                 </View>
 
                 <View style={stylesHome.touchs}>
@@ -29,11 +52,13 @@ export default function RegisterUser({navigation}){
 
                     <TouchableOpacity
                     style={stylesHome.login}
-                    onPress={() => navigation.navigate('Login')}>
+                    onPress={() => navigation.navigate('Home')}>
                         <Text style={stylesHome.txtLogin}>Já possuo conta,</Text>
                         <Text style={stylesHome.txtLogin}>fazer login</Text>
                     </TouchableOpacity>
                 </View>
+
+
             </View>
         </View>
     )

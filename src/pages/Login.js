@@ -1,7 +1,100 @@
-import React from 'react'
-import {TextInput, Text, TouchableOpacity, View, StyleSheet} from 'react-native'
+import React, { useState } from 'react'
+import {TextInput, Text, TouchableOpacity, View, StyleSheet, ActivityIndicator, Alert} from 'react-native'
+
+import firebase from '@firebase/app';
+import '@firebase/auth'
 
 export default function Login({navigation}){
+
+    // const [
+    //     email,
+    //     setEmail
+    // ] = useState('')
+
+    // const [
+    //     password,
+    //     setPassword
+    // ] = useState('')
+
+    // const [
+    //     isLoding,
+    //     setIsLoading
+    // ] = useState(false)
+
+    // const [
+    //     message,
+    //     setMessage
+    // ] = useState('')
+
+    // let componentDidMount = () =>{
+    //     const firebaseConfig = {
+    //         apiKey: "AIzaSyBsMszPC8rcZinXx22Yz3Aq5nakrH571Bw",
+    //         authDomain: "appstudy-d5299.firebaseapp.com",
+    //         databaseURL: "https://appstudy-d5299.firebaseio.com",
+    //         projectId: "appstudy-d5299",
+    //         storageBucket: "appstudy-d5299.appspot.com",
+    //         messagingSenderId: "386253086254",
+    //         appId: "1:386253086254:web:a3c299cdfa890ab28349bf"
+    //     }
+
+    //     try{
+    //         firebase.initializeApp(firebaseConfig)
+    //     }
+    //     catch(err){
+    //         if(!/already exists/.test(err.message)){
+    //             console.error("Erro Login")
+    //         }
+    //     }
+    // }
+
+    // renderButton = () =>{
+    //     if(isLoding){
+    //         return <ActivityIndicator />
+    //     }
+    //     return(
+    //         <TouchableOpacity
+    //             style={stylesLogin.createAccount}
+    //             onPress={() => login()}>
+    //             <Text style={stylesLogin.txtCreateAccount}>Entrar</Text>
+    //         </TouchableOpacity>
+    //     )
+    // }
+
+    // renderMessage = () =>{
+    //     const {message} = setMessage;
+
+    //     if(!message){
+    //         return null;
+    //     }
+    //     return(
+    //         <View>
+    //             <Text>
+    //                 {message}
+    //             </Text>
+    //         </View>
+    //     )
+    // }
+
+    // login = () =>{
+    //     setIsLoading = true
+    //     const email = setEmail
+    //     const password = setPassword
+
+    //     const loginSuccess = user =>{
+    //         navigation.navigate('Home')
+    //     }
+
+    //     firebase
+    //     .auth()
+    //     .signInWithEmailAndPassword(email,password)
+    //     .then(loginSuccess)
+    //     .catch(error => {
+    //         if(error.code == 'auth/user-not-found'){
+    //             alert('Usuário não encontrado')
+    //         }
+    //     })
+    // }
+
     return(
         <View style={stylesLogin.container}>
             <View style={stylesLogin.formView}>

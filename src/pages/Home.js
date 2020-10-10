@@ -67,8 +67,8 @@ const stylesHome = StyleSheet.create({
         flex: 1
     },
     container:{
-        maxWidth: 500,
-        //backgroundColor: '#00ddee',
+        maxWidth: 700,
+        backgroundColor: '#00ddee',
         justifyContent: 'center',
         alignItems: 'center'
     },
