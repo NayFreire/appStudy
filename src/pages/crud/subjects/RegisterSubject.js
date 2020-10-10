@@ -6,23 +6,22 @@ export default function RegisterSubject(){
 
     return(
         <SafeAreaView style={stylesRegisterSubject.safeView}>
-            <ScrollView>
-                <View style={stylesRegisterSubject.container}>
-                    <Text style={stylesRegisterSubject.title}>Nova matéria, novos estudos</Text>
+            <View style={stylesRegisterSubject.container}>
+                <Text style={stylesRegisterSubject.title}>Novo assunto de estudo</Text>
 
-                    <View style={stylesRegisterSubject.inputView}>
-                        <Text style={stylesRegisterSubject.name}>Nome</Text>
-                        <TextInput 
-                        style={stylesRegisterSubject.inputName}
-                        onChangeText={(subject) => setSubject(subject)}/>
-                    </View>
-                    <TouchableOpacity
-                    style={stylesRegisterSubject.touch}
-                    onPress={() => alert(subject)}>
-                        <Text>Adicionar</Text>
-                    </TouchableOpacity>
+                <View style={stylesRegisterSubject.inputView}>
+                    <Text style={stylesRegisterSubject.name}>Nome</Text>
+                    <TextInput 
+                    style={stylesRegisterSubject.inputName}
+                    onChangeText={(subject) => setSubject(subject)}/>
                 </View>
-            </ScrollView>
+                
+                <TouchableOpacity
+                style={stylesRegisterSubject.touch}
+                onPress={() => alert(subject)}>
+                    <Text style={stylesRegisterSubject.txtTouch}>Adicionar</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     )
 }
@@ -36,7 +35,7 @@ const stylesRegisterSubject = StyleSheet.create({
         alignItems: 'center'
     },
     container:{
-        padding: 10,
+        padding: 20,
         backgroundColor: '#fff',
         justifyContent: 'center',
         alignItems: 'center',
@@ -48,13 +47,17 @@ const stylesRegisterSubject = StyleSheet.create({
         textAlign: 'center',
     },
     inputView:{
-        marginTop: 20,
-        backgroundColor: 'red'
+        width: '100%',
+        marginTop: 10,
+        marginBottom: 10
     },
     name:{
-        fontSize: 18
+        maxWidth: 500,
+        fontSize: 20,
+        marginBottom: 10
     },
     inputName:{
+        minWidth: '100%',
         height: 45,
         padding: 5,
         fontSize: 18,
@@ -62,6 +65,18 @@ const stylesRegisterSubject = StyleSheet.create({
         backgroundColor: '#E0F0FF'
     },
     touch:{
-
+        padding: 20,
+        margin: 10,
+        width: '90%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 55,
+        backgroundColor: '#3CA2D6',
+        borderRadius: 10
+    },
+    txtTouch:{
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: 20
     }
 })
