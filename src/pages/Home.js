@@ -31,33 +31,33 @@ export default function Home({navigation}){
         return(
             <TouchableOpacity
             key={item.subjectId}
-            // style={}
+            style={stylesHome.subjectItem}
             // onPress={}
             >
-                <Text>{item.subjectName}</Text>
-                <Text>{item.numberNotes}</Text>
+                <Text style={stylesHome.subjectName}>{item.subjectName}</Text>
+                <Text style={stylesHome.numberTopics}>Número de tópicos: {item.numberNotes}</Text>
             </TouchableOpacity>            
         )
     }
 
-    // let imageOrList = (item) => {
-    //     if(flatListItems.length == 0){
-    //         return(
-    //             <View>
-    //                 <ImagemEmptyList style={stylesHome.imgEmpty}/>
-    //                 <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> 
-    //             </View>
-    //         )
-    //     }
-    //     else{
-    //         return(
-    //             <FlatList
-    //             data={flatListItems}
-    //             keyExtractor={(item, index) => index.toString()}
-    //             renderItem={({item}) => itemView(item)} />
-    //         )
-    //     }
-    // }
+    let imageOrList = (item) => {
+        if(flatListItems.length == 0){
+            return(
+                <View>
+                    <ImagemEmptyList style={stylesHome.imgEmpty}/>
+                    <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> 
+                </View>
+            )
+        }
+        else{
+            return(
+                <FlatList
+                data={flatListItems}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) => itemView(item)} />
+            )
+        }
+    }
 
     return(
         <SafeAreaView style={stylesHome.safeArea}>
@@ -78,12 +78,12 @@ export default function Home({navigation}){
                         </View>
                         <View style={stylesHome.subjectsList}>
                             
-                            {/* {imageOrList()} */}
-
+                            {imageOrList()}
+{/* 
                             <FlatList
                             data={flatListItems}
                             keyExtractor={(item, index) => index.toString()}
-                            renderItem={({item}) => itemView(item)} />
+                            renderItem={({item}) => itemView(item)} /> */}
 
                         </View>
                     </View>
@@ -158,11 +158,13 @@ const stylesHome = StyleSheet.create({
         fontSize: 40
     },
     subjectsList:{
-        padding: 40,
+        width: '100%',
+        paddingHorizontal: 40,
         justifyContent: 'center',
         alignItems: 'center'
     },
     imgEmpty:{
+        marginTop: 40,
         marginBottom: 20
     },
     txtEmpty:{
@@ -172,8 +174,9 @@ const stylesHome = StyleSheet.create({
         marginBottom: 10
     },
     subjectItem:{
+        minWidth: '100%',
         margin: 10,
-        padding: 10,
+        padding: 20,
         backgroundColor: '#F0D33B',
         borderRadius: 5
     },
