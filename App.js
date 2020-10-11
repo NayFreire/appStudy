@@ -34,14 +34,32 @@ export default function App() {
                         'DROP TABLE IF EXISTS tableSubjects', []
                     );
                     txn.executeSql(
-                        'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TIME)',
+                        'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TIME)', []
+                    )
+                }
+            }
+        )
+    })
+  }, [])
+
+  useEffect(() => {
+    db.transaction((txn) => {
+        txn.executeSql(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='tableNotas",
+            [],
+            function (tx, result) {
+                if(result.rows.length == 0){
+                    txn.executeSql(
+                        'DROP TABLE IF EXISTS tableNotas', []
+                    );
+                    txn.executeSql(
                         'CREATE TABLE IF NOT EXISTS tableNotas(notaId INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(50), descricao VARCHAR(1000), subjectID int, FOREIGN KEY (subjectid) REFERENCES tableSubjects(subjectId))', []
                     )
                 }
             }
         )
     })
-}, [])
+  }, [])
 
   return (
     <NavigationContainer>

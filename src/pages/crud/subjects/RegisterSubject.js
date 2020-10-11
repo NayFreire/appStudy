@@ -6,18 +6,22 @@ import * as SQLite from 'expo-sqlite'
 var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
 
 export default function RegisterSubject({navigation}){    
-    const [subject, setSubject] = useState('')
+    let [subjectName, setSubjectName] = useState('')
 
     let registerSubject = () =>{
-        if(!subject){
-            alert('Campo vazio, digite o nome da matéria')
+        if(!subjectName){
+            alert('Campo vazio, digite o nome da matéria');
+            return;
         }
+
         db.transaction(function (tx){
+            //alert('Entrou na transiction: ' + subjectName)
             tx.executeSql(
-                'INSERT INTO tableSubjects (subjectName) VALUES (?)',
-                [subject],
+                'INSERT INTO tableSubjects (subjectName, numberNotes, timeStudying) VALUES (?, ?, ?)',
+                [subjectName, 0, 0],
                 (tx, results) => {
                     if(results.rowsAffected > 0){
+                        console('Cadastrada com sucesso')
                         Alert.alert(
                             'Sucesso',
                             'Matéria cadastrada com sucesso',
@@ -45,9 +49,10 @@ export default function RegisterSubject({navigation}){
 
                 <View style={stylesRegisterSubject.inputView}>
                     <Text style={stylesRegisterSubject.name}>Nome</Text>
+
                     <TextInput 
                     style={stylesRegisterSubject.inputName}
-                    onChangeText={(subject) => setSubject(subject)}/>
+                    onChangeText={(subjectName) => setSubjectName(subjectName)}/>
                 </View>
                 
                 <TouchableOpacity

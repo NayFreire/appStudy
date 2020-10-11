@@ -13,13 +13,17 @@ export default function Home({navigation}){
     useEffect(() => {
         db.transaction((tx) => {
             tx.executeSql(
-                'SELECT * FROM tableSubject', [], (tx, results) => {
+                'SELECT * FROM tableSubjects', 
+                [], 
+                (tx, results) => {
                     var temp = [];
-                    for(let i=0; i<results.rows.length;i++){
+                    for(let i=0; i<results.rows.length; i++){
                         temp.push(results.rows.item(i))
+                        console.log(temp(i))
                     }
                     setFlatListItems(temp);
-            })
+                }
+            )
         })
     }, [])
 
@@ -37,9 +41,28 @@ export default function Home({navigation}){
         )
     }
 
+    let imageOrList = (item) => {
+        if(flatListItems.length == 0){
+            return(
+                <View>
+                    <ImagemEmptyList style={stylesHome.imgEmpty}/>
+                    <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> 
+                </View>
+            )
+        }
+        else{
+            return(
+                <FlatList
+                data={flatListItems}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) => itemView} />
+            )
+        }
+    }
+
     return(
         <SafeAreaView style={stylesHome.safeArea}>
-            <ScrollView style={stylesHome.scrollContainer}>                
+            {/* <ScrollView style={stylesHome.scrollContainer}>                 */}
                 <View style={stylesHome.container}>
                     <View style={stylesHome.hours}>
                         <Text style={stylesHome.textHour}>Total de Horas Estudadas</Text>
@@ -55,18 +78,14 @@ export default function Home({navigation}){
                             </TouchableOpacity>
                         </View>
                         <View style={stylesHome.subjectsList}>
-                            {/* <ImagemEmptyList style={stylesHome.imgEmpty}/>
-                            <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> */}
-
-                            <FlatList
-                            data={flatListItems}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({item}) => itemView} />
+                            
+                        {imageOrList()}
+                            
                         </View>
                     </View>
                 </View>
                 
-            </ScrollView>
+            {/* </ScrollView> */}
         </SafeAreaView>
     )
 }
@@ -135,7 +154,7 @@ const stylesHome = StyleSheet.create({
         fontSize: 40
     },
     subjectsList:{
-        padding: 20,
+        padding: 40,
         justifyContent: 'center',
         alignItems: 'center'
     },
