@@ -19,7 +19,7 @@ export default function Home({navigation}){
                     var temp = [];
                     for(let i=0; i<results.rows.length; i++){
                         temp.push(results.rows.item(i))
-                        console.log(temp(i))
+                        console.log(temp[i])
                     }
                     setFlatListItems(temp);
                 }
@@ -36,29 +36,28 @@ export default function Home({navigation}){
             >
                 <Text>{item.subjectName}</Text>
                 <Text>{item.numberNotes}</Text>
-            </TouchableOpacity>
-            
+            </TouchableOpacity>            
         )
     }
 
-    let imageOrList = (item) => {
-        if(flatListItems.length == 0){
-            return(
-                <View>
-                    <ImagemEmptyList style={stylesHome.imgEmpty}/>
-                    <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> 
-                </View>
-            )
-        }
-        else{
-            return(
-                <FlatList
-                data={flatListItems}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) => itemView} />
-            )
-        }
-    }
+    // let imageOrList = (item) => {
+    //     if(flatListItems.length == 0){
+    //         return(
+    //             <View>
+    //                 <ImagemEmptyList style={stylesHome.imgEmpty}/>
+    //                 <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> 
+    //             </View>
+    //         )
+    //     }
+    //     else{
+    //         return(
+    //             <FlatList
+    //             data={flatListItems}
+    //             keyExtractor={(item, index) => index.toString()}
+    //             renderItem={({item}) => itemView(item)} />
+    //         )
+    //     }
+    // }
 
     return(
         <SafeAreaView style={stylesHome.safeArea}>
@@ -79,8 +78,13 @@ export default function Home({navigation}){
                         </View>
                         <View style={stylesHome.subjectsList}>
                             
-                        {imageOrList()}
-                            
+                            {/* {imageOrList()} */}
+
+                            <FlatList
+                            data={flatListItems}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({item}) => itemView(item)} />
+
                         </View>
                     </View>
                 </View>

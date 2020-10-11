@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {TextInput, Text, TouchableOpacity, ScrollView, View, SafeAreaView, StyleSheet} from 'react-native'
+import {TextInput, Text, TouchableOpacity, Alert, View, SafeAreaView, StyleSheet} from 'react-native'
 
 import * as SQLite from 'expo-sqlite'
 
@@ -17,11 +17,11 @@ export default function RegisterSubject({navigation}){
         db.transaction(function (tx){
             //alert('Entrou na transiction: ' + subjectName)
             tx.executeSql(
-                'INSERT INTO tableSubjects (subjectName, numberNotes, timeStudying) VALUES (?, ?, ?)',
-                [subjectName, 0, 0],
+                'INSERT INTO tableSubjects (subjectName, numberNotes) VALUES (?, ?)',
+                [subjectName, 0],
                 (tx, results) => {
                     if(results.rowsAffected > 0){
-                        console('Cadastrada com sucesso')
+                        console.log('Cadastrada com sucesso')
                         Alert.alert(
                             'Sucesso',
                             'Matéria cadastrada com sucesso',
@@ -57,7 +57,7 @@ export default function RegisterSubject({navigation}){
                 
                 <TouchableOpacity
                 style={stylesRegisterSubject.touch}
-                onPress={registerSubject}>
+                onPress={registerSubject, () => navigation.navigate('Home')}>
                     <Text style={stylesRegisterSubject.txtTouch}>Adicionar</Text>
                 </TouchableOpacity>
             </View>
