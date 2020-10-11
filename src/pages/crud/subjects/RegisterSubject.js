@@ -1,8 +1,42 @@
 import React, { useState } from 'react'
 import {TextInput, Text, TouchableOpacity, ScrollView, View, SafeAreaView, StyleSheet} from 'react-native'
 
-export default function RegisterSubject(){    
+import * as SQLite from 'expo-sqlite'
+
+var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
+
+export default function RegisterSubject({navigation}){    
     const [subject, setSubject] = useState('')
+
+    let registerSubject = () =>{
+        if(!subject){
+            alert('Campo vazio, digite o nome da matéria')
+        }
+        db.transaction(function (tx){
+            tx.executeSql(
+                'INSERT INTO tableSubjects (subjectName) VALUES (?)',
+                [subject],
+                (tx, results) => {
+                    if(results.rowsAffected > 0){
+                        Alert.alert(
+                            'Sucesso',
+                            'Matéria cadastrada com sucesso',
+                            [
+                                {
+                                    text: 'Ok',
+                                    onPress: () => navigation.navigate('Home')
+                                },
+                            ],
+                            {cancelable: false}
+                        )
+                    }
+                    else{
+                        alert('Cadastro falhou')
+                    }
+                }
+            )
+        })
+    }
 
     return(
         <SafeAreaView style={stylesRegisterSubject.safeView}>
@@ -18,7 +52,7 @@ export default function RegisterSubject(){
                 
                 <TouchableOpacity
                 style={stylesRegisterSubject.touch}
-                onPress={() => alert(subject)}>
+                onPress={registerSubject}>
                     <Text style={stylesRegisterSubject.txtTouch}>Adicionar</Text>
                 </TouchableOpacity>
             </View>

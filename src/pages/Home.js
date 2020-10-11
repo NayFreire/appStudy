@@ -2,28 +2,40 @@ import React, { useEffect, useState } from 'react'
 import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView} from 'react-native'
 import ImagemEmptyList from '../components/ImageEmptyList'
 import * as SQLite from 'expo-sqlite'
+import { FlatList } from 'react-native-gesture-handler'
 
 var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
 
 export default function Home({navigation}){
+
+    let[flatListItems, setFlatListItems] = useState([])
+
     useEffect(() => {
-        db.transaction((txn) => {
-            txn.executeSql(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='tableSubjects",
-                [],
-                function (tx, result) {
-                    if(result.rows.length == 0){
-                        txn.executeSql(
-                            'DROP TABLE IF EXISTS tableSubjects', []
-                        );
-                        txn.executeSql(
-                            'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TIME)', []
-                        )
+        db.transaction((tx) => {
+            tx.executeSql(
+                'SELECT * FROM tableSubject', [], (tx, results) => {
+                    var temp = [];
+                    for(let i=0; i<results.rows.length;i++){
+                        temp.push(results.rows.item(i))
                     }
-                }
-            )
+                    setFlatListItems(temp);
+            })
         })
     }, [])
+
+    let itemView = (item) => {
+        return(
+            <TouchableOpacity
+            key={item.subjectId}
+            // style={}
+            // onPress={}
+            >
+                <Text>{item.subjectName}</Text>
+                <Text>{item.numberNotes}</Text>
+            </TouchableOpacity>
+            
+        )
+    }
 
     return(
         <SafeAreaView style={stylesHome.safeArea}>
@@ -43,8 +55,13 @@ export default function Home({navigation}){
                             </TouchableOpacity>
                         </View>
                         <View style={stylesHome.subjectsList}>
-                            <ImagemEmptyList style={stylesHome.imgEmpty}/>
-                            <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text>
+                            {/* <ImagemEmptyList style={stylesHome.imgEmpty}/>
+                            <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> */}
+
+                            <FlatList
+                            data={flatListItems}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({item}) => itemView} />
                         </View>
                     </View>
                 </View>

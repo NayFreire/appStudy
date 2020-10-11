@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native'
@@ -14,9 +14,35 @@ import RegisterSubject from './src/pages/crud/subjects/RegisterSubject'
 // import ViewSubject from './src/pages/crud/subjects/ViewSubject'
 // import ViewAllSubjects from './src/pages/crud/subjects/ViewAllSubjects'
 
+
+import * as SQLite from 'expo-sqlite'
+
+var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
+
 let Stack = createStackNavigator();
 
 export default function App() {
+
+  useEffect(() => {
+    db.transaction((txn) => {
+        txn.executeSql(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='tableSubjects",
+            [],
+            function (tx, result) {
+                if(result.rows.length == 0){
+                    txn.executeSql(
+                        'DROP TABLE IF EXISTS tableSubjects', []
+                    );
+                    txn.executeSql(
+                        'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TIME)',
+                        'CREATE TABLE IF NOT EXISTS tableNotas(notaId INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(50), descricao VARCHAR(1000), subjectID int, FOREIGN KEY (subjectid) REFERENCES tableSubjects(subjectId))', []
+                    )
+                }
+            }
+        )
+    })
+}, [])
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
