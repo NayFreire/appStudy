@@ -40,6 +40,8 @@ export default function RegisterSubject({navigation}){
                 }
             )
         })
+
+        navigation.navigate('Home')
     }
 
     return(

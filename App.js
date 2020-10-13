@@ -10,7 +10,7 @@ import Login from './src/pages/Login'
 import RegisterLoginUser from './src/pages/RegisterLoginUser'
 import RegisterSubject from './src/pages/crud/subjects/RegisterSubject'
 // import UpdateSubject from './src/pages/crud/subjects/UpdateSubject'
-// import DeleteSubject from './src/pages/crud/subjects/DeleteSubject'
+import DeleteSubject from './src/pages/crud/subjects/DeleteSubject'
 // import ViewSubject from './src/pages/crud/subjects/ViewSubject'
 // import ViewAllSubjects from './src/pages/crud/subjects/ViewAllSubjects'
 
@@ -81,8 +81,9 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="RegisterUser" component={RegisterLoginUser} options={{title: "Cadastre-se ou entre"}}/> 
         <Stack.Screen name="Login" component={Login} options={{title: "Login"}}/> 
-        <Stack.Screen name="Home" component={Home} options={{title: "Página Inicial"}}/> 
+        <Stack.Screen name="Home" component={Home} options={{title: "Página Inicial", headerLeft: null}}/> 
         <Stack.Screen name="RegisterSubject" component={RegisterSubject} options={{title: "Adicione uma matéria"}}/> 
+        <Stack.Screen name="DeleteSubject" component={DeleteSubject} options={{title: "Deletar"}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

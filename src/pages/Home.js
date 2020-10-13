@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView, Image} from 'react-native'
+import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView, Image, Alert} from 'react-native'
 import ImagemEmptyList from '../components/ImageEmptyList'
 import * as SQLite from 'expo-sqlite'
 import { FlatList } from 'react-native-gesture-handler'
-// import { Dimensions } from 'react-native';
+import DeleteSubject from '../pages/crud/subjects/DeleteSubject'
 
 var db = SQLite.openDatabase('StudyDatabase.db')
 
@@ -42,7 +42,24 @@ export default function Home({navigation}){
                     </View>
                     <View style={stylesHome.iconsItem}>
                         <View style={stylesHome.iconInView}>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={() => 
+                                Alert.alert(
+                                'Alerta',
+                                'Editar esta matéria?',
+                                [
+                                    {
+                                        text: 'Sim',
+                                        onPress: () => console.log(item.subjectName)
+                                    },
+                                    {
+                                        text: 'Não',
+                                        onPress: () => console.log('Não excluído')
+                                    }
+                                ],
+                                {cancelable: false}
+                            )
+                            }>
                                 <Image style={stylesHome.iconImage}
                                 source = {require('../images/icons/editIcon.png')} />
                             </TouchableOpacity>
