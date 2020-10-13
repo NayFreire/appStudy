@@ -5,14 +5,11 @@ import * as SQLite from 'expo-sqlite'
 import { FlatList } from 'react-native-gesture-handler'
 // import { Dimensions } from 'react-native';
 
-var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
+var db = SQLite.openDatabase('StudyDatabase.db')
 
 export default function Home({navigation}){
 
     let[flatListItems, setFlatListItems] = useState([])
-
-    
-// const windowWidth = Dimensions.get('window').width;
 
     useEffect(() => {
         db.transaction((tx) => {
@@ -21,7 +18,7 @@ export default function Home({navigation}){
                 [], 
                 (tx, results) => {
                     var temp = [];
-                    for(let i=0; i<results.rows.length; i++){
+                    for(let i=0; i<results.rows.length; ++i){
                         temp.push(results.rows.item(i))
                         console.log(temp[i])
                     }
@@ -100,32 +97,6 @@ export default function Home({navigation}){
                         <View style={stylesHome.subjectsList}>
                             
                             {imageOrList()} 
-
-                            {/* <TouchableOpacity
-                            // key={item.subjectId}
-                            style={stylesHome.subjectItem}
-                            // onPress={}
-                            >
-                                <View style={stylesHome.viewInItem}>
-                                    <View style={stylesHome.txtViewItem}>
-                                        <Text style={stylesHome.subjectName}>Desenvolvimento Web</Text>
-                                        <Text style={stylesHome.numberTopics}>Número de tópicos: 3</Text>
-                                    </View>
-                                    <View style={stylesHome.iconsItem}>
-                                        <View style={stylesHome.iconInView}>
-                                            <TouchableOpacity>
-                                                <Image style={stylesHome.iconImage}
-                                                source = {require('../images/icons/editIcon.png')} />
-                                            </TouchableOpacity>
-                                            
-                                            <TouchableOpacity>
-                                                <Image style={stylesHome.iconImage}
-                                                source = {require('../images/icons/deleteIcon.png')} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>  */}
 
                             {/* 
                             <FlatList

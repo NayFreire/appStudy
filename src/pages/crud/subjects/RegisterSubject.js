@@ -3,7 +3,7 @@ import {TextInput, Text, TouchableOpacity, Alert, View, SafeAreaView, StyleSheet
 
 import * as SQLite from 'expo-sqlite'
 
-var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
+var db = SQLite.openDatabase('StudyDatabase.db')
 
 export default function RegisterSubject({navigation}){    
     let [subjectName, setSubjectName] = useState('')
@@ -15,10 +15,10 @@ export default function RegisterSubject({navigation}){
         }
 
         db.transaction(function (tx){
-            //alert('Entrou na transiction: ' + subjectName)
+            alert('Entrou na transiction: ' + subjectName)
             tx.executeSql(
-                'INSERT INTO tableSubjects (subjectName, numberNotes) VALUES (?, ?)',
-                [subjectName, 0],
+                'INSERT INTO tableSubjects (subjectName, numberNotes, timeStudying) VALUES (?, ?, ?)',
+                [subjectName, 0, '00:00:00'],
                 (tx, results) => {
                     if(results.rowsAffected > 0){
                         console.log('Cadastrada com sucesso')
@@ -57,7 +57,7 @@ export default function RegisterSubject({navigation}){
                 
                 <TouchableOpacity
                 style={stylesRegisterSubject.touch}
-                onPress={registerSubject, () => navigation.navigate('Home')}>
+                onPress={registerSubject}>
                     <Text style={stylesRegisterSubject.txtTouch}>Adicionar</Text>
                 </TouchableOpacity>
             </View>

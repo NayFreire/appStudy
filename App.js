@@ -17,27 +17,31 @@ import RegisterSubject from './src/pages/crud/subjects/RegisterSubject'
 
 import * as SQLite from 'expo-sqlite'
 
-var db = SQLite.openDatabase({name: 'StudyDatabase.db'})
+var db = SQLite.openDatabase('StudyDatabase.db')
 
 let Stack = createStackNavigator();
 
 export default function App() {
 
   useEffect(() => {
-    db.transaction((txn) => {
+    db.transaction(function (txn){
         txn.executeSql(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='tableSubjects'",
             [],
-            function (tx, result) {
-                if(result.rows.length == 0){
+            function (tx, res) {
+                if(res.rows.length == 0){
                     txn.executeSql(
                         'DROP TABLE IF EXISTS tableSubjects', []
                     );
                     txn.executeSql(
-                        'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TIME)', [],
+                        'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TEXT)', 
+                        [],
                         (error) => {
                           console.log("Error call back: " + JSON.stringify(error));
-                          console.log("transaction complete call back ");
+                          console.log(error);
+                        },
+                        () => {
+                          console.log("transaction complete call back")
                         }
                     );
                 }
