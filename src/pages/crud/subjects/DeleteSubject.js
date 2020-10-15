@@ -7,21 +7,13 @@ import { FlatList } from 'react-native-gesture-handler'
 var db = SQLite.openDatabase('StudyDatabase.db')
 
 const DeleteSubject = () => {
-    Alert.alert(
-        'Alerta',
-        'Deletar esta matéria?',
-        [
-            {
-                text: 'Sim',
-                onPress: () => console.log('Excluído')
-            },
-            {
-                text: 'Não',
-                onPress: () => 'Não excluído'
-            }
-        ],
-        {cancelable: false}
-    )
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                'SELECT subjectId FROM tableSubjects'
+            )
+        })
+    })
 }
 
 export default DeleteSubject

@@ -3,13 +3,14 @@ import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView, Imag
 import ImagemEmptyList from '../components/ImageEmptyList'
 import * as SQLite from 'expo-sqlite'
 import { FlatList } from 'react-native-gesture-handler'
-import DeleteSubject from '../pages/crud/subjects/DeleteSubject'
 
 var db = SQLite.openDatabase('StudyDatabase.db')
 
 export default function Home({navigation}){
 
     let[flatListItems, setFlatListItems] = useState([])
+    let[selectedSub, setSelectedSub] = useState('')
+    let[selectedSubData, setSelectedSubData] = useState([])
 
     useEffect(() => {
         db.transaction((tx) => {
@@ -28,12 +29,53 @@ export default function Home({navigation}){
         })
     }, [])
 
+    
+    function specificSubject (nameSub){
+        setSelectedSub(nameSub)
+        console.log(selectedSub)
+        //selectedSubData([])
+        // db.transaction((tx) => {
+        //     tx.executeSql(
+        //         'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
+        //         [selectedSub],
+        //         (tx, results) => {
+        //             var aux = [];
+        //             aux.push(results.rows.item(results.rows.length))
+        //             alert(aux)
+        //         }
+        //     )
+        // })
+    }
+    
+
+
     let itemView = (item) => {
         return(
             <TouchableOpacity
             key={item.subjectId}
             style={stylesHome.subjectItem}
-            // onPress={}
+            onPress={
+                () => {
+                setSelectedSub(item.subjectName)
+                console.log("Nome: ", item.subjectName)
+                console.log("Selected: ", selectedSub)
+                var auxName = item.subjectName
+                //selectedSubData([])
+
+                db.transaction((tx) => {
+                    tx.executeSql(
+                        'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
+                        [auxName],
+                        (tx, results) => {
+                            var aux = [];
+                            aux.push(results.rows.item(0))
+                            alert(aux.length)
+                        }
+                    )
+                })
+                
+                }
+            }
             >
                 <View style={stylesHome.viewInItem}>
                     <View>
@@ -50,7 +92,7 @@ export default function Home({navigation}){
                                 [
                                     {
                                         text: 'Sim',
-                                        onPress: () => console.log(item.subjectName)
+                                        onPress: () => alert("Nome: ", item.subjectName)
                                     },
                                     {
                                         text: 'Não',

@@ -11,7 +11,7 @@ import RegisterLoginUser from './src/pages/RegisterLoginUser'
 import RegisterSubject from './src/pages/crud/subjects/RegisterSubject'
 // import UpdateSubject from './src/pages/crud/subjects/UpdateSubject'
 import DeleteSubject from './src/pages/crud/subjects/DeleteSubject'
-// import ViewSubject from './src/pages/crud/subjects/ViewSubject'
+import ViewSubject from './src/pages/crud/subjects/ViewSubject'
 // import ViewAllSubjects from './src/pages/crud/subjects/ViewAllSubjects'
 
 
@@ -57,24 +57,39 @@ export default function App() {
     });
   }, []);
 
-  // useEffect(() => {
-  //   db.transaction((txn) => {
-  //       txn.executeSql(
-  //           "SELECT name FROM sqlite_master WHERE type='table' AND name='tableNotas",
-  //           [],
-  //           function (tx, result) {
-  //               if(result.rows.length == 0){
-  //                   txn.executeSql(
-  //                       'DROP TABLE IF EXISTS tableNotas', []
-  //                   );
-  //                   txn.executeSql(
-  //                       'CREATE TABLE IF NOT EXISTS tableNotas(notaId INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(50), descricao VARCHAR(1000), subjectID int, FOREIGN KEY (subjectid) REFERENCES tableSubjects(subjectId))', []
-  //                   )
-  //               }
-  //           }
-  //       )
-  //   })
-  // }, [])
+  useEffect(() => {
+    db.transaction((txn) => {
+        txn.executeSql(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='tableNotas'",
+            [],
+            function (tx, result) {
+                if(result.rows.length == 0){
+                    txn.executeSql(
+                        'DROP TABLE IF EXISTS tableNotas', []
+                    );
+                    txn.executeSql(
+                        'CREATE TABLE IF NOT EXISTS tableNotas(notaId INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(50), descricao VARCHAR(1000), subjectID int, FOREIGN KEY (subjectid) REFERENCES tableSubjects(subjectId))', 
+                        [],
+                        (error) => {
+                          console.log("Error call back: " + JSON.stringify(error));
+                          console.log(error)
+                        },
+                        () => {
+                          console.log("transaction complete call back")
+                        }
+                    )
+                }
+            },
+            (error) => {
+              console.log("Error call back: " + JSON.stringify(error));
+              console.log(error);
+            },
+            () => {
+              console.log("Transaction complete call back");
+            }
+        );
+    });
+  }, [])
 
   return (
     <NavigationContainer>
@@ -84,6 +99,7 @@ export default function App() {
         <Stack.Screen name="Home" component={Home} options={{title: "Página Inicial", headerLeft: null}}/> 
         <Stack.Screen name="RegisterSubject" component={RegisterSubject} options={{title: "Adicione uma matéria"}}/> 
         <Stack.Screen name="DeleteSubject" component={DeleteSubject} options={{title: "Deletar"}} />
+        <Stack.Screen name="ViewSubject" component={ViewSubject} options={{title: "Notas"}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
