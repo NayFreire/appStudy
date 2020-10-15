@@ -5,15 +5,16 @@ import { FlatList } from 'react-native-gesture-handler'
 
 var db = SQLite.openDatabase('StudyDatabase.db')
 
-export default function Home({navigation}){
+export default function ViewSubject({route, navigation}){
     
+    const {subIdParam} = route.params;
 
     return(
         <SafeAreaView style={stylesHome.safeArea}>
             {/* <ScrollView style={stylesHome.scrollContainer}>                 */}
                 <View style={stylesHome.container}>
                     <View style={stylesHome.hours}>
-                        <Text style={stylesHome.textHour}>Matemática</Text>
+    <Text style={stylesHome.textHour}>Matéria: {JSON.stringify(subIdParam)}</Text>
                     </View>
                     <View style={stylesHome.subjectsView}>
                         <View style={stylesHome.subjectsTitleView}>

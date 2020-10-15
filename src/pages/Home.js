@@ -11,6 +11,8 @@ export default function Home({navigation}){
     let[flatListItems, setFlatListItems] = useState([])
     let[selectedSub, setSelectedSub] = useState('')
     let[selectedSubData, setSelectedSubData] = useState([])
+    
+    //const navigationRef = React.useRef(null);
 
     useEffect(() => {
         db.transaction((tx) => {
@@ -56,24 +58,25 @@ export default function Home({navigation}){
             style={stylesHome.subjectItem}
             onPress={
                 () => {
-                setSelectedSub(item.subjectName)
-                console.log("Nome: ", item.subjectName)
-                console.log("Selected: ", selectedSub)
-                var auxName = item.subjectName
-                //selectedSubData([])
+                    setSelectedSub(item.subjectName)
+                    console.log("Nome: ", item.subjectName)
+                    console.log("Selected: ", selectedSub)
+                    var auxName = item.subjectName
+                    //selectedSubData([])
 
-                db.transaction((tx) => {
-                    tx.executeSql(
-                        'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
-                        [auxName],
-                        (tx, results) => {
-                            var aux = [];
-                            aux.push(results.rows.item(0))
-                            alert(aux.length)
-                        }
-                    )
-                })
-                
+                    db.transaction((tx) => {
+                        tx.executeSql(
+                            'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
+                            [auxName],
+                            (tx, results) => {
+                                var aux = [];
+                                aux.push(results.rows.item(0))
+                                console.log(aux[0].subjectId)
+                                navigation.navigate('ViewSubject', {subIdParam: aux[0].subjectId})
+                                                    
+                            }
+                        )
+                    })                
                 }
             }
             >
@@ -92,7 +95,7 @@ export default function Home({navigation}){
                                 [
                                     {
                                         text: 'Sim',
-                                        onPress: () => alert("Nome: ", item.subjectName)
+                                        onPress: () => alert("Nome: ", auxName)
                                     },
                                     {
                                         text: 'Não',
