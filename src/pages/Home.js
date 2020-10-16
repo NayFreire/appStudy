@@ -31,26 +31,6 @@ export default function Home({navigation}){
         })
     }, [])
 
-    
-    function specificSubject (nameSub){
-        setSelectedSub(nameSub)
-        console.log(selectedSub)
-        //selectedSubData([])
-        // db.transaction((tx) => {
-        //     tx.executeSql(
-        //         'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
-        //         [selectedSub],
-        //         (tx, results) => {
-        //             var aux = [];
-        //             aux.push(results.rows.item(results.rows.length))
-        //             alert(aux)
-        //         }
-        //     )
-        // })
-    }
-    
-
-
     let itemView = (item) => {
         return(
             <TouchableOpacity

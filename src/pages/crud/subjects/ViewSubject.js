@@ -2,27 +2,113 @@ import React, { useEffect, useState } from 'react'
 import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView, Image, Alert} from 'react-native'
 import * as SQLite from 'expo-sqlite'
 import { FlatList } from 'react-native-gesture-handler'
+import ImagemEmptyList from '../../../components/ImageEmptyList'
 
 var db = SQLite.openDatabase('StudyDatabase.db')
 
 export default function ViewSubject({route, navigation}){
     
+    let [flatListTopics, setFlatListTopics] = useState([])
+    let [selectedTopic, setSelectedTopic] = useState('')
+    
     const {subIdParam} = route.params;
+    var name;
+
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                'SELECT subjectName FROM tableSubjects WHERE subjectId = ?',
+                [subIdParam],
+                (tx, results) => {
+                    var nameSubject = []
+                    nameSubject.push(results.rows.item(0))
+                    name = nameSubject[0].subjectName;
+                    //console.log("Name: ", name)
+
+                    db.transaction((tx) => {
+                        tx.executeSql(
+                            'SELECT * FROM tableNotas WHERE subjectId = ?',
+                            [subIdParam],
+                            (tx, results) => {
+                                var auxNotas = [];
+                                for(let i=0; i<results.rows.length; ++i){
+                                    auxNotas.push(results.rows.item(i))
+                                    //console.log(auxNotas[i])
+                                }
+                                setFlatListTopics(auxNotas)
+                            }
+                        )
+                    })
+                }
+            )
+        })
+    })
+
+    let itemView = (item) => {
+        return(
+            <TouchableOpacity
+            key={item.subjectId}
+            style={stylesHome.subjectItem}
+            // onPress={}
+            >
+                <View style={stylesHome.viewInItem}>
+                    <View>
+                        <Text style={stylesHome.subjectName}>{item.titulo}</Text>
+                    </View>
+                    {/* <View style={stylesHome.iconsItem}>
+                        <View style={stylesHome.iconInView}>
+                            
+                             
+                        </View>
+                    </View> */}
+                </View>
+            </TouchableOpacity>            
+        )
+    }
+
+    let imageOrList = (item) => {
+        if(flatListTopics.length == 0){
+            return(
+                <View style={stylesHome.paperEmptyView}>
+                    <ImagemEmptyList style={stylesHome.imgEmpty}/>
+                    <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhum tópico!</Text> 
+                </View>
+            )
+        }
+        else{
+            return(
+                <FlatList
+                data={flatListTopics}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) => itemView(item)} />
+            )
+        }
+
+        return(
+            <Text>Nada adicionado ainda</Text>
+        )
+    }
 
     return(
         <SafeAreaView style={stylesHome.safeArea}>
             {/* <ScrollView style={stylesHome.scrollContainer}>                 */}
                 <View style={stylesHome.container}>
                     <View style={stylesHome.hours}>
-    <Text style={stylesHome.textHour}>Matéria: {JSON.stringify(subIdParam)}</Text>
+    <Text style={stylesHome.textSubjectName}>Matéria: {name}</Text>
                     </View>
                     <View style={stylesHome.subjectsView}>
                         <View style={stylesHome.subjectsTitleView}>
-                            
+                            <Text style={stylesHome.subjectsTitleText}>Tópicos</Text>
+                            <TouchableOpacity 
+                            style={stylesHome.subjectsTitlePlus}
+                            onPress={() => navigation.navigate('RegisterNotes', {idSub: subIdParam})}>
+                                <Text style={stylesHome.subjectsTitlePlusTxt}>+</Text>
+                            </TouchableOpacity>
                         </View>
+
                         <View style={stylesHome.subjectsList}>
                             
-                            {/* {imageOrList()}  */}
+                            {imageOrList()} 
 
                             {/* 
                             <FlatList
@@ -61,7 +147,7 @@ const stylesHome = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 20
     },
-    textHour:{
+    textSubjectName:{
         fontSize: 25
     },
     timer:{

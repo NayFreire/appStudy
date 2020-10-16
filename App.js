@@ -13,6 +13,7 @@ import RegisterSubject from './src/pages/crud/subjects/RegisterSubject'
 import DeleteSubject from './src/pages/crud/subjects/DeleteSubject'
 import ViewSubject from './src/pages/crud/subjects/ViewSubject'
 // import ViewAllSubjects from './src/pages/crud/subjects/ViewAllSubjects'
+import RegisterNotes from './src/pages/crud/notes/RegisterNotes'
 
 
 import * as SQLite from 'expo-sqlite'
@@ -100,6 +101,7 @@ export default function App() {
         <Stack.Screen name="RegisterSubject" component={RegisterSubject} options={{title: "Adicione uma matéria"}}/> 
         <Stack.Screen name="DeleteSubject" component={DeleteSubject} options={{title: "Deletar"}} />
         <Stack.Screen name="ViewSubject" component={ViewSubject} options={{title: "Notas"}} />
+        <Stack.Screen name="RegisterNotes" component={RegisterNotes} options={{title: "Vamos de novo tópico?"}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
