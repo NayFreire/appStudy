@@ -89,6 +89,8 @@ export default function ViewSubject({route, navigation}){
         )
     }
 
+    
+
     return(
         <SafeAreaView style={stylesHome.safeArea}>
             {/* <ScrollView style={stylesHome.scrollContainer}>                 */}
