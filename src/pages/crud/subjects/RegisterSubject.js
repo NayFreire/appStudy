@@ -28,7 +28,7 @@ export default function RegisterSubject({navigation}){
                             [
                                 {
                                     text: 'Ok',
-                                    onPress: () => navigation.navigate('Home')
+                                    onPress: () => {navigation.navigate('Home')}
                                 },
                             ],
                             {cancelable: false}

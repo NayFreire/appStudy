@@ -13,6 +13,74 @@ export default function Home({navigation}){
     let[selectedSubData, setSelectedSubData] = useState([])
     
     //const navigationRef = React.useRef(null);
+    
+    useEffect(() => {
+        db.transaction(function (txn){
+            txn.executeSql(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='tableSubjects'",
+                [],
+                function (tx, res) {
+                    if(res.rows.length == 0){
+                        txn.executeSql(
+                            'DROP TABLE IF EXISTS tableSubjects', []
+                        );
+                        txn.executeSql(
+                            'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TEXT)', 
+                            [],
+                            (error) => {
+                              console.log("Error call back: " + JSON.stringify(error));
+                              console.log(error);
+                            },
+                            () => {
+                              console.log("transaction complete call back")
+                            }
+                        );
+                    }
+                },
+              (error) => {
+                console.log("Error call back: " + JSON.stringify(error));
+                console.log(error);
+              },
+              () => {
+                console.log("Transaction complete call back");
+              }
+            );
+        });
+      }, []);
+    
+      useEffect(() => {
+        db.transaction((txn) => {
+            txn.executeSql(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='tableTopics'",
+                [],
+                function (tx, result) {
+                    if(result.rows.length == 0){
+                        txn.executeSql(
+                            'DROP TABLE IF EXISTS tableTopics', []
+                        );
+                        txn.executeSql(
+                            'CREATE TABLE IF NOT EXISTS tableTopics(topicId INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(50), subjectID int, FOREIGN KEY (subjectID) REFERENCES tableSubjects(subjectId))', 
+                            [],
+                            (error) => {
+                              console.log("Error call back: " + JSON.stringify(error));
+                              console.log(error)
+                            },
+                            () => {
+                              console.log("transaction complete call back")
+                            }
+                        )
+                    }
+                },
+                (error) => {
+                  console.log("Error call back: " + JSON.stringify(error));
+                  console.log(error);
+                },
+                () => {
+                  console.log("Transaction complete call back");
+                }
+            );
+        });
+      }, [])
 
     useEffect(() => {
         db.transaction((tx) => {
@@ -31,97 +99,9 @@ export default function Home({navigation}){
         })
     }, [])
 
-    let itemView = (item) => {
-        return(
-            <TouchableOpacity
-            key={item.subjectId}
-            style={stylesHome.subjectItem}
-            onPress={
-                () => {
-                    setSelectedSub(item.subjectName)
-                    console.log("Nome: ", item.subjectName)
-                    console.log("Selected: ", selectedSub)
-                    var auxName = item.subjectName
-                    //selectedSubData([])
-
-                    db.transaction((tx) => {
-                        tx.executeSql(
-                            'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
-                            [auxName],
-                            (tx, results) => {
-                                var aux = [];
-                                aux.push(results.rows.item(0))
-                                console.log(aux[0].subjectId)
-                                navigation.navigate('ViewSubject', {subIdParam: aux[0].subjectId})
-                                                    
-                            }
-                        )
-                    })                
-                }
-            }
-            >
-                <View style={stylesHome.viewInItem}>
-                    <View>
-                        <Text style={stylesHome.subjectName}>{item.subjectName}</Text>
-                        <Text style={stylesHome.numberTopics}>Número de tópicos: {item.numberNotes}</Text>
-                    </View>
-                    <View style={stylesHome.iconsItem}>
-                        <View style={stylesHome.iconInView}>
-                            <TouchableOpacity
-                            onPress={() => 
-                                Alert.alert(
-                                'Alerta',
-                                'Editar esta matéria?',
-                                [
-                                    {
-                                        text: 'Sim',
-                                        onPress: () => alert("Nome: ", auxName)
-                                    },
-                                    {
-                                        text: 'Não',
-                                        onPress: () => console.log('Não excluído')
-                                    }
-                                ],
-                                {cancelable: false}
-                            )
-                            }>
-                                <Image style={stylesHome.iconImage}
-                                source = {require('../images/icons/editIcon.png')} />
-                            </TouchableOpacity>
-                            
-                            <TouchableOpacity>
-                                <Image style={stylesHome.iconImage}
-                                source = {require('../images/icons/deleteIcon.png')} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </TouchableOpacity>            
-        )
-    }
-
-    let imageOrList = (item) => {
-        if(flatListItems.length == 0){
-            return(
-                <View style={stylesHome.paperEmptyView}>
-                    <ImagemEmptyList style={stylesHome.imgEmpty}/>
-                    <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> 
-                </View>
-            )
-        }
-        else{
-            return(
-                <FlatList
-                data={flatListItems}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) => itemView(item)} />
-            )
-        }
-    }
-
     return(
         <SafeAreaView style={stylesHome.safeArea}>
-            {/* <ScrollView style={stylesHome.scrollContainer}>                 */}
+            <ScrollView style={stylesHome.scrollContainer}>                 
                 <View style={stylesHome.container}>
                     <View style={stylesHome.hours}>
                         <Text style={stylesHome.textHour}>Total de Horas Estudadas</Text>
@@ -129,28 +109,57 @@ export default function Home({navigation}){
                     </View>
                     <View style={stylesHome.subjectsView}>
                         <View style={stylesHome.subjectsTitleView}>
-                            <Text style={stylesHome.subjectsTitleText}>Matérias</Text>
-                            <TouchableOpacity 
+                            <Text style={{fontSize: 25}}>Matérias</Text>
+
+                            <TouchableOpacity
                             style={stylesHome.subjectsTitlePlus}
                             onPress={() => navigation.navigate('RegisterSubject')}>
-                                <Text style={stylesHome.subjectsTitlePlusTxt}>+</Text>
+                                <Text style={stylesHome.subjectsTitlePlusTxt}>Cadastrar</Text>
                             </TouchableOpacity>
+
+                            <TouchableOpacity 
+                            style={stylesHome.subjectsTitlePlus}
+                            onPress={() => navigation.navigate('UpdateSubject')}>
+                                <Text style={stylesHome.subjectsTitlePlusTxt}>Editar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
+                            style={stylesHome.subjectsTitlePlus}
+                            onPress={() => navigation.navigate('DeleteSubject')}>
+                                <Text style={stylesHome.subjectsTitlePlusTxt}>Deletar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
+                            style={stylesHome.subjectsTitlePlus}
+                            onPress={() => navigation.navigate('ViewSubject')}>
+                                <Text style={stylesHome.subjectsTitlePlusTxt}>Ver Todas</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
+                            style={stylesHome.subjectsTitlePlus}
+                            onPress={ 
+                            () => Alert.alert(
+          'Instruções',
+          'Para adicionar um tópico é preciso que você o associe com uma matéria já cadastrada',
+          [
+            {
+              text: "Ok, entendi",
+              onPress: navigation.navigate('TopicsMenu')
+            }
+          ],
+          {cancelable: true}
+        )}>
+                                <Text style={stylesHome.subjectsTitlePlusTxt}>Tópicos</Text>
+                            </TouchableOpacity> 
                         </View>
                         <View style={stylesHome.subjectsList}>
                             
-                            {imageOrList()} 
-
-                            {/* 
-                            <FlatList
-                            data={flatListItems}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({item}) => itemView(item)} /> */}
 
                         </View>
                     </View>
                 </View>
                 
-            {/* </ScrollView> */}
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -192,25 +201,21 @@ const stylesHome = StyleSheet.create({
         borderRadius: 20
     },
     subjectsTitleView:{
-        flexDirection: 'row',
         marginTop: 5,
         //backgroundColor: 'purple',
         alignItems: 'center',
         paddingHorizontal: 10,
-        justifyContent: 'space-between'
+        justifyContent: 'center'
     },
-    subjectsTitleText:{
-        marginLeft: 5,
-        fontSize: 34
-    },
-    subjectsTitlePlus:{
+    
+    subjectsTitlePlus:{ 
+        width: '100%',
         display: 'flex',
         backgroundColor: '#4ADE6B',
         alignItems: 'center',
-        justifyContent: 'center',        
-        width: 45,
-        height: 45,
-        borderRadius: 30
+        justifyContent: 'center',   
+        borderRadius: 5,
+        marginBottom: 10 
     },
     subjectsTitlePlusTxt:{
         textAlign: 'center',
@@ -220,59 +225,5 @@ const stylesHome = StyleSheet.create({
     subjectsList:{
         flex: 1,
         //backgroundColor: 'pink',
-    },
-    paperEmptyView:{
-        marginTop: 80,
-        //backgroundColor: 'red',
-        alignSelf: 'center'
-    },
-    imgEmpty:{
-        marginTop: 40,
-        marginBottom: 20
-    },
-    txtEmpty:{
-        fontSize: 20,
-        textAlign: 'center',
-        color: '#67656F',
-        marginBottom: 10
-    },
-    subjectItem:{
-        backgroundColor: '#F0D33B',
-        borderRadius: 10,
-        padding: 10,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginVertical: 5
-    },
-    viewInItem:{
-        width: '100%',
-        flexDirection: 'row',
-        //backgroundColor: '#aaaaaa',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    txtViewItem:{
-        width: '70%',
-        flexDirection: 'column'
-    },
-    subjectName:{
-        fontSize: 25,
-        flexDirection: 'column'
-    },
-    numberTopics:{
-        fontSize: 18,
-        flexDirection: 'column'
-    },
-    iconsItem:{
-        //backgroundColor: 'orange',
-        alignItems: 'center',
-        justifyContent: 'flex-end'
-    },
-    iconInView:{
-        flexDirection: 'row'
-    },
-    iconImage:{
-        width: 30,
-        height: 30
     }
 })

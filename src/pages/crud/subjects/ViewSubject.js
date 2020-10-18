@@ -1,113 +1,158 @@
 import React, { useEffect, useState } from 'react'
 import {Text, TouchableOpacity, ScrollView, View, StyleSheet, SafeAreaView, Image, Alert} from 'react-native'
+import ImagemEmptyList from '../../../components/ImageEmptyList'
 import * as SQLite from 'expo-sqlite'
 import { FlatList } from 'react-native-gesture-handler'
-import ImagemEmptyList from '../../../components/ImageEmptyList'
 
 var db = SQLite.openDatabase('StudyDatabase.db')
 
-export default function ViewSubject({route, navigation}){
-    
-    let [flatListTopics, setFlatListTopics] = useState([])
-    let [selectedTopic, setSelectedTopic] = useState('')
-    
-    const {subIdParam} = route.params;
-    var name;
+export default function ViewSubject({navigation}){
 
+    let[flatListItems, setFlatListItems] = useState([])
+    let[selectedSub, setSelectedSub] = useState('')
+    let[selectedSubData, setSelectedSubData] = useState([])
+    
+    //const navigationRef = React.useRef(null);
+    
     useEffect(() => {
         db.transaction((tx) => {
             tx.executeSql(
-                'SELECT subjectName FROM tableSubjects WHERE subjectId = ?',
-                [subIdParam],
+                'SELECT * FROM tableSubjects', 
+                [], 
                 (tx, results) => {
-                    var nameSubject = []
-                    nameSubject.push(results.rows.item(0))
-                    name = nameSubject[0].subjectName;
-                    //console.log("Name: ", name)
-
-                    db.transaction((tx) => {
-                        tx.executeSql(
-                            'SELECT * FROM tableNotas WHERE subjectId = ?',
-                            [subIdParam],
-                            (tx, results) => {
-                                var auxNotas = [];
-                                for(let i=0; i<results.rows.length; ++i){
-                                    auxNotas.push(results.rows.item(i))
-                                    //console.log(auxNotas[i])
-                                }
-                                setFlatListTopics(auxNotas)
-                            }
-                        )
-                    })
+                    var temp = [];
+                    for(let i=0; i<results.rows.length; ++i){
+                        temp.push(results.rows.item(i))
+                        //console.log(temp[i])
+                    }
+                    setFlatListItems(temp);
                 }
             )
         })
-    })
+    }, [])
 
     let itemView = (item) => {
         return(
             <TouchableOpacity
             key={item.subjectId}
             style={stylesHome.subjectItem}
-            // onPress={}
+            onPress={
+                () => {
+                    setSelectedSub(item.subjectName)
+                    console.log("Nome: ", item.subjectName)
+                    console.log("Selected: ", selectedSub)
+                    var auxName = item.subjectName
+                    //selectedSubData([])
+
+                    db.transaction((tx) => {
+                        tx.executeSql(
+                            'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
+                            [auxName],
+                            (tx, results) => {
+                                var aux = [];
+                                aux.push(results.rows.item(0))
+                                console.log('aux[0]: ',aux[0].subjectId)
+                                var auxID = aux[0].subjectId
+                                //console.log('auxID: ', auxID)
+                                navigation.navigate('ViewSubject', {subIdParam: auxID})
+                                                    
+                            }
+                        )
+                    })                
+                }
+            }
             >
                 <View style={stylesHome.viewInItem}>
                     <View>
-                        <Text style={stylesHome.subjectName}>{item.titulo}</Text>
+                        <Text style={stylesHome.subjectName}>{item.subjectName}</Text>
+                        <Text style={stylesHome.numberTopics}>Número de tópicos: {item.numberNotes}</Text>
                     </View>
-                    {/* <View style={stylesHome.iconsItem}>
+                    <View style={stylesHome.iconsItem}>
                         <View style={stylesHome.iconInView}>
+                            <TouchableOpacity
+                            onPress={() => 
+
+                                // db.transaction((tx) => {
+                                //     tx.executeSql(
+                                //         'SELECT subjectId FROM tableSubjects WHERE subjectName = ?',
+                                //         [auxName],
+                                //         (tx, results) => {
+                                //             var aux = [];
+                                //             aux.push(results.rows.item(0))
+                                //             console.log(aux[0].subjectId)
+                                //             navigation.navigate('ViewSubject', {subIdParam: aux[0].subjectId})
+                                                                
+                                //         }
+                                //     )
+                                // }),   
+
+                                Alert.alert(
+                                'Alerta',
+                                'Editar esta matéria?',
+                                [
+                                    {
+                                        text: 'Sim',
+                                        onPress: () => alert("Nome: ", auxName)
+                                    },
+                                    {
+                                        text: 'Não',
+                                        onPress: () => console.log('Não excluído')
+                                    }
+                                ],
+                                {cancelable: false}
+                            )
+                            }>
+                                <Image style={stylesHome.iconImage}
+                                source = {require('../../../images/icons/editIcon.png')} />
+                            </TouchableOpacity>
                             
-                             
+                            <TouchableOpacity>
+                                <Image style={stylesHome.iconImage}
+                                source = {require('../../../images/icons/deleteIcon.png')} />
+                            </TouchableOpacity>
                         </View>
-                    </View> */}
+                    </View>
                 </View>
             </TouchableOpacity>            
         )
     }
 
     let imageOrList = (item) => {
-        if(flatListTopics.length == 0){
+        if(flatListItems.length == 0){
             return(
                 <View style={stylesHome.paperEmptyView}>
                     <ImagemEmptyList style={stylesHome.imgEmpty}/>
-                    <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhum tópico!</Text> 
+                    <Text style={stylesHome.txtEmpty}>MDS! Você ainda não adicionou nenhuma matéria!</Text> 
                 </View>
             )
         }
         else{
             return(
                 <FlatList
-                data={flatListTopics}
+                data={flatListItems}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => itemView(item)} />
             )
         }
-
-        return(
-            <Text>Nada adicionado ainda</Text>
-        )
     }
-
-    
 
     return(
         <SafeAreaView style={stylesHome.safeArea}>
             {/* <ScrollView style={stylesHome.scrollContainer}>                 */}
                 <View style={stylesHome.container}>
                     <View style={stylesHome.hours}>
-    <Text style={stylesHome.textSubjectName}>Matéria: {name}</Text>
+                        <Text style={stylesHome.textHour}>Total de Horas Estudadas</Text>
+                        <Text style={stylesHome.timer}>15:46:56</Text>
                     </View>
                     <View style={stylesHome.subjectsView}>
                         <View style={stylesHome.subjectsTitleView}>
-                            <Text style={stylesHome.subjectsTitleText}>Tópicos</Text>
+                            <Text style={stylesHome.subjectsTitleText}>Matérias</Text>
                             <TouchableOpacity 
                             style={stylesHome.subjectsTitlePlus}
-                            onPress={() => navigation.navigate('RegisterNotes', {idSub: subIdParam})}>
+                            onPress={() => navigation.navigate('RegisterSubject')}>
                                 <Text style={stylesHome.subjectsTitlePlusTxt}>+</Text>
                             </TouchableOpacity>
                         </View>
-
                         <View style={stylesHome.subjectsList}>
                             
                             {imageOrList()} 
@@ -126,7 +171,6 @@ export default function ViewSubject({route, navigation}){
         </SafeAreaView>
     )
 }
-
 
 const stylesHome = StyleSheet.create({
     safeArea:{
@@ -149,7 +193,7 @@ const stylesHome = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 20
     },
-    textSubjectName:{
+    textHour:{
         fontSize: 25
     },
     timer:{

@@ -9,11 +9,15 @@ import Home from './src/pages/Home'
 import Login from './src/pages/Login'
 import RegisterLoginUser from './src/pages/RegisterLoginUser'
 import RegisterSubject from './src/pages/crud/subjects/RegisterSubject'
-// import UpdateSubject from './src/pages/crud/subjects/UpdateSubject'
+import UpdateSubject from './src/pages/crud/subjects/UpdateSubject'
 import DeleteSubject from './src/pages/crud/subjects/DeleteSubject'
 import ViewSubject from './src/pages/crud/subjects/ViewSubject'
 // import ViewAllSubjects from './src/pages/crud/subjects/ViewAllSubjects'
-import RegisterNotes from './src/pages/crud/notes/RegisterNotes'
+import RegisterTopics from './src/pages/crud/topics/RegisterTopics'
+import ViewTopics from './src/pages/crud/topics/ViewTopics'
+import UpdateTopics from './src/pages/crud/topics/UpdateTopics'
+import DeleteTopics from './src/pages/crud/topics/DeleteTopics'
+import TopicsMenu from './src/pages/crud/topics/TopicsMenu'
 
 
 import * as SQLite from 'expo-sqlite'
@@ -22,96 +26,28 @@ var db = SQLite.openDatabase('StudyDatabase.db')
 
 let Stack = createStackNavigator();
 
-export default function App() {
+export default class App extends React.Component {
 
-  useEffect(() => {
-    db.transaction(function (txn){
-        txn.executeSql(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='tableSubjects'",
-            [],
-            function (tx, res) {
-                if(res.rows.length == 0){
-                    txn.executeSql(
-                        'DROP TABLE IF EXISTS tableSubjects', []
-                    );
-                    txn.executeSql(
-                        'CREATE TABLE IF NOT EXISTS tableSubjects(subjectId INTEGER PRIMARY KEY AUTOINCREMENT,subjectName VARCHAR(50), numberNotes INTEGER, timeStudying TEXT)', 
-                        [],
-                        (error) => {
-                          console.log("Error call back: " + JSON.stringify(error));
-                          console.log(error);
-                        },
-                        () => {
-                          console.log("transaction complete call back")
-                        }
-                    );
-                }
-            },
-          (error) => {
-            console.log("Error call back: " + JSON.stringify(error));
-            console.log(error);
-          },
-          () => {
-            console.log("Transaction complete call back");
-          }
-        );
-    });
-  }, []);
+    state = {data: []}
 
-  useEffect(() => {
-    db.transaction((txn) => {
-        txn.executeSql(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='tableNotas'",
-            [],
-            function (tx, result) {
-                if(result.rows.length == 0){
-                    txn.executeSql(
-                        'DROP TABLE IF EXISTS tableNotas', []
-                    );
-                    txn.executeSql(
-                        'CREATE TABLE IF NOT EXISTS tableNotas(notaId INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(50), descricao VARCHAR(1000), subjectID int, FOREIGN KEY (subjectid) REFERENCES tableSubjects(subjectId))', 
-                        [],
-                        (error) => {
-                          console.log("Error call back: " + JSON.stringify(error));
-                          console.log(error)
-                        },
-                        () => {
-                          console.log("transaction complete call back")
-                        }
-                    )
-                }
-            },
-            (error) => {
-              console.log("Error call back: " + JSON.stringify(error));
-              console.log(error);
-            },
-            () => {
-              console.log("Transaction complete call back");
-            }
-        );
-    });
-  }, [])
-
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="RegisterUser" component={RegisterLoginUser} options={{title: "Cadastre-se ou entre"}}/> 
-        <Stack.Screen name="Login" component={Login} options={{title: "Login"}}/> 
-        <Stack.Screen name="Home" component={Home} options={{title: "Página Inicial", headerLeft: null}}/> 
-        <Stack.Screen name="RegisterSubject" component={RegisterSubject} options={{title: "Adicione uma matéria"}}/> 
-        <Stack.Screen name="DeleteSubject" component={DeleteSubject} options={{title: "Deletar"}} />
-        <Stack.Screen name="ViewSubject" component={ViewSubject} options={{title: "Notas"}} />
-        <Stack.Screen name="RegisterNotes" component={RegisterNotes} options={{title: "Vamos de novo tópico?"}} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    render(){
+        return (
+            <NavigationContainer>
+              <Stack.Navigator>
+                <Stack.Screen name="RegisterUser" component={RegisterLoginUser} options={{title: "Cadastre-se ou entre"}}/> 
+                <Stack.Screen name="Login" component={Login} options={{title: "Login"}}/> 
+                <Stack.Screen name="Home" component={Home} options={{title: "Página Inicial", headerLeft: null}}/> 
+                <Stack.Screen name="RegisterSubject" component={RegisterSubject} options={{title: "Adicione uma matéria"}}/> 
+                <Stack.Screen name="DeleteSubject" component={DeleteSubject} options={{title: "Deletar"}} />
+                <Stack.Screen name="ViewSubject" component={ViewSubject} options={{title: "Notas"}} />
+                <Stack.Screen name="UpdateSubject" component={UpdateSubject} options={{title: "Edite sua matéria"}} />
+                <Stack.Screen name="TopicsMenu" component={TopicsMenu} options={{title: "Menu de Tópicos"}} />
+                <Stack.Screen name="RegisterTopics" component={RegisterTopics} options={{title: "Vamos de novo tópico?"}} />
+                <Stack.Screen name="UpdateTopics" component={UpdateTopics} options={{title: "Edição de Tópicos"}} />
+                <Stack.Screen name="ViewTopics" component={ViewTopics} options={{title: "Todos os Tópicos"}} />
+                <Stack.Screen name="DeleteTopics" component={DeleteTopics} options={{title: "Excluir Tópicos"}} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          );
+    }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
